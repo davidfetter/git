@@ -55,6 +55,18 @@ test_expect_success 'git fetch --all' '
 	 test_cmp expect output)
 '
 
+test_expect_success 'git fetch (fetch.all = true)' '
+	(clone one test9 &&
+	 cd test9 &&
+	 git config fetch.all true &&
+	 git remote add one ../one &&
+	 git remote add two ../two &&
+	 git remote add three ../three &&
+	 git fetch &&
+	 git branch -r >output &&
+	 test_cmp ../test/expect output)
+'
+
 test_expect_success 'git fetch --all should continue if a remote has errors' '
 	(git clone one test2 &&
 	 cd test2 &&
@@ -88,6 +100,17 @@ test_expect_success 'git fetch --multiple (but only one remote)' '
 	 git remote add three ../three &&
 	 git fetch --multiple three &&
 	 git branch -r > output &&
+	 test_cmp ../expect output)
+'
+
+test_expect_success 'git fetch one (fetch.all = true)' '
+	(cd test3 &&
+	 git config fetch.all true &&
+	 git fetch three &&
+	 git branch -r >output &&
+	 test_cmp ../expect output &&
+	 git fetch --no-all &&
+	 git branch -r >output &&
 	 test_cmp ../expect output)
 '
 

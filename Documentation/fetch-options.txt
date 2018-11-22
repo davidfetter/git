@@ -1,5 +1,8 @@
 --all::
 	Fetch all remotes.
++
+See also the `fetch.all` configuration variable documented in
+linkgit:git-config[1].
 
 -a::
 --append::

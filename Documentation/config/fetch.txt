@@ -61,5 +61,9 @@ fetch.negotiationAlgorithm::
 	that never skips commits (unless the server has acknowledged it or one
 	of its descendants).
 	Unknown values will cause 'git fetch' to error out.
+
+fetch.all::
+	If true, fetch will automatically behave as if the `--all` option
+	had been given on the command line.
 +
 See also the `--negotiation-tip` option for linkgit:git-fetch[1].

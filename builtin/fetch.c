@@ -38,6 +38,9 @@ enum {
 	TAGS_SET = 2
 };
 
+static int fetch_all_config = -1; /* unspecified */
+#define FETCH_ALL_BY_DEFAULT 0 /* do we fetch all by default? */
+
 static int fetch_prune_config = -1; /* unspecified */
 static int prune = -1; /* unspecified */
 #define PRUNE_BY_DEFAULT 0 /* do we prune by default? */
@@ -69,6 +72,11 @@ static struct string_list negotiation_tip = STRING_LIST_INIT_NODUP;
 
 static int git_fetch_config(const char *k, const char *v, void *cb)
 {
+	if (!strcmp(k, "fetch.all")) {
+		fetch_all_config = git_config_bool(k, v);
+		return 0;
+	}
+
 	if (!strcmp(k, "fetch.prune")) {
 		fetch_prune_config = git_config_bool(k, v);
 		return 0;
@@ -1617,8 +1625,12 @@ int cmd_fetch(int argc, const char **argv, const char *prefix)
 			die(_("fetch --all does not make sense with refspecs"));
 		(void) for_each_remote(get_one_remote_for_fetch, &list);
 	} else if (argc == 0) {
-		/* No arguments -- use default remote */
-		remote = remote_get(NULL);
+		if (fetch_all_config) {
+			(void) for_each_remote(get_one_remote_for_fetch, &list);
+		} else {
+			/* No arguments -- use default remote */
+			remote = remote_get(NULL);
+		}
 	} else if (multiple) {
 		/* All arguments are assumed to be remotes or groups */
 		for (i = 0; i < argc; i++)
